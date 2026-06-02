@@ -1,0 +1,325 @@
+# Load the required libraries
+
+# TO install packages the first time, run this code
+install.packages("ggpubr")
+
+# once installed, run this code
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(grid)
+library(xlsx)
+library(RColorBrewer)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+library(tidyr)
+library(ggthemes)
+library(ggpubr)
+
+library(dplyr)
+library(tibble)
+library(stringr)
+
+
+# Import the dataset for the field and lab
+Gradient.df <- read_excel("C:/Users/sarag/Uni/Between the Fjords/Gradient sampling 2024 - DurinV4.xlsx",
+                          col_types = c("guess", "text", "text", "text",
+                                        "text", "text", "text", "numeric",
+                                        "numeric", "numeric", "numeric", "text",
+                                        "numeric", "numeric", "numeric", "numeric",
+                                        "numeric","numeric", "numeric", "numeric",
+                                        "numeric", "numeric", "numeric", "text",
+                                        "text", "text", "text", "text", "text", "text", "text", "text"))
+Gradient.dfv2 <- read_csv("C:/Users/sarag/Uni/Between the Fjords/Gradient sampling 2024 - DurinV4.csv"
+                          )
+
+# Import ANO site and climate data
+all_coords <- read.csv("C:/Users/sarag/Uni/Between the Fjords/all_coords.csv")
+
+# Sampled ANO sites
+ANO_sites <- read_excel("C:/Users/sarag/Uni/Between the Fjords/Gradient sampling 2024 - DurinV4.xlsx",
+                        sheet = "ANOSampledSites",
+                          col_types = c("guess", "text", "text", "text", "text"))
+
+
+
+
+# Subset field and lab data to four corners sites (LY, SE, SO, and KA)
+
+gradient.four.corner.df <- Gradient.dfv2 %>%
+  # Drop fill the other columns to complete meta-data
+  fill(date, .direction = "down") %>%
+  fill(ANO_flatID, .direction = "down") %>%
+  # Filter to the DURIN 4 Corner sites
+  filter(ANO_flatID %in% c("SE_O",
+                           "SE_F",
+                           "KA_O",
+                           "KA_F",
+                           "SO_F",
+                           "SO_O",
+                           "LY_O",
+                           "LY_F",
+                           "KK_O",
+                           "KK_F")) %>%
+  # Drop fill only the key columns to help split the dataset
+  fill(ANO_pointID, .direction = "down") %>%
+  fill(habitat, .direction = "down") %>%
+  fill(collector, .direction = "down") %>%
+  fill(NiN_type, .direction = "down") %>%
+  fill(species, .direction = "down") %>%
+  fill(individual_nr, .direction = "down") %>%
+  fill(plant_height_cm, .direction = "down") %>%
+  fill(length_lb_cm, .direction = "down") %>%
+  fill(nr_segments_lb, .direction = "down")  %>%
+  # Making sure that the data columns are numeric
+  mutate(across(c(plant_height_cm,
+                  length_lb_cm,
+                  nr_segments_lb),
+                  as.numeric)) %>%
+           mutate(across(c(
+                  length_mm,
+                  nr_leaves,
+                  nr_scars,
+                  nr_branch_scars,
+                  nr_side_branches,
+                  nr_fruits,
+                  leaf_weight,
+                  stem_weight,
+                  fruit_weight,
+                  branches_weight,
+                  sidebranches_weight),
+                as.numeric)) %>%
+  mutate(across(c(Segment),
+                as.character)) %>%
+  # Change the spelling of 'KK_F' and 'KK_O' to match correct format
+  # During processing KA's and KK's were accidnetly duplicated during data entry of field information
+  # Only KK's should be kept as these have field and lab data (weights)
+  filter(ANO_flatID %in% c("KK_O", "KK_F",
+                           "SE_O", "SE_F",
+                           "SO_O", "SO_F",
+                           "LY_O", "LY_F")) %>%
+  # Rename KK's to KA's to keep naming structure
+  mutate(ANO_flatID = recode(ANO_flatID,
+                             'KK_F'='KA_F',
+                             'KK_O' = 'KA_O')) %>%
+  # Change spelling of 'open' to 'Open' to match DURIN formatting standards
+  mutate(habitat = recode(habitat,
+                          'open'='Open',
+                          'forest'='Forest')) %>%
+  # Create a new siteID column, and use info in ANO_flatID to allocate sites
+  mutate(siteID = recode(ANO_flatID,
+                         'SE_O' = 'Senja',
+                         'SE_F' = 'Senja',
+                         'KA_O' = 'Kautokeino',
+                         'KA_F' = 'Kautokeino',
+                         'SO_F' = 'Sogndal',
+                         'SO_O' = 'Sogndal',
+                         'LY_O' = 'Lygra',
+                         'LY_F' = 'Lygra')) %>%
+  # Change spelling of species and column name to match DURIN data standards
+  mutate(speciesID = recode(species,
+                            'vv' = 'VV',
+                            'vm' = 'VM')) %>%
+  # Create column for full species names, and match DURIN data standards
+  mutate(species = recode(species,
+                          'vv'= 'Vaccinium vitis-idaea',
+                          'vm' = 'Vaccinium myrtillus')) %>%
+  # Add context for the sites
+  mutate(geography = factor(siteID, levels = c("Lygra", "Senja", "Sogndal", "Kautokeino"),
+                              labels = c("South", "North", "South", "North"))) %>%
+  mutate(oceanity = factor(siteID, levels = c("Lygra", "Senja", "Sogndal", "Kautokeino"),
+                               labels = c("Coast", "Coast", "Inland", "Inland"))) %>% 
+  mutate(
+    leaf_stem_ratio_main = leaf_weight / stem_weight,
+    total_biomass = rowSums(select(., leaf_weight:sidebranches_weight), na.rm = TRUE))
+
+
+
+# Create the climate dataset
+# Tidy up the dataset names and values
+Gradient.df2 <- Gradient.dfv2 %>%
+  # Drop fill only the key columns to help split the dataset
+  # Date, the ANO_flatID which is a mix of climate, 4corners and VCG coding and in some instance ANO + pointID
+  fill(date, .direction = "down") %>%
+  fill(ANO_flatID, .direction = "down") %>%
+  filter(! ANO_flatID %in% c("SE_O", "SE_F",
+                             "KA_O", "KA_F",
+                             "KK_O", "KK_F",
+                             "LY_O", "LY_F",
+                             "SO_O", "SO_F")) %>%
+  # Also drop Mika's sites from VCG
+  filter(! ANO_pointID %in% c("MK8_4", "MK9_2", "MK8_2",
+                             "MK19_1", "MK8_3", "MK8_1",
+                             "MK9_4", "MK9_3")) %>%
+  # And the sites from Finland (no coords) %>%
+  filter(! ANO_flatID %in% c("KIL")) %>%
+  # String split ANO_flatID as some instances have the pointID also included
+  separate_wider_delim(cols = ANO_flatID,
+                       delim = '_',
+                       names = c('ANO_flatID', 'ANO_pointID2'),
+                       too_few = "align_start") %>%
+  # Merge the original ANO_pointID with the newly populated ANO_point2
+  mutate(ANO_pointID = coalesce(ANO_pointID, ANO_pointID2)) %>%
+  # Drop fill the rest of the columns now the ANO ID's are correct
+  fill(ANO_pointID, .direction = "down") %>%
+  fill(habitat, .direction = "down") %>%
+  fill(collector, .direction = "down") %>%
+  fill(NiN_type, .direction = "down") %>%
+  fill(species, .direction = "down") %>%
+  fill(individual_nr, .direction = "down") %>%
+  fill(plant_height_cm, .direction = "down") %>%
+  fill(length_lb_cm, .direction = "down") %>%
+  fill(nr_segments_lb, .direction = "down")  %>%
+  # For external collaborators
+  fill(UniqueID, .direction = "down")  %>%
+  # Make these columns numeric
+  mutate(across(c(
+    # Change the plotID codes back to numeric for later on
+                  ANO_flatID,
+                  ANO_pointID,
+    # Other normal variables
+                  plant_height_cm,
+                  length_lb_cm,
+                  nr_segments_lb,
+                  length_mm,
+                  nr_leaves,
+                  nr_scars,
+                  nr_branch_scars,
+                  nr_side_branches,
+                  nr_fruits,
+                  leaf_weight,
+                  stem_weight,
+                  fruit_weight,
+                  branches_weight,
+                  sidebranches_weight),
+                as.numeric)) %>%
+  # Change spelling of 'open' to 'Open' to match DURIN formatting standards
+  mutate(habitat = recode(habitat,
+                          'skog' = 'Forest',
+                          'open'='Open',
+                          'forest'='Forest')) %>%
+  # For consistency with 4corners
+  # Create a new siteID column, and use info in ANO_flatID to allocate sites
+  add_column(siteID = NA) %>%
+  # Change spelling of species and column name to match DURIN data standards
+  mutate(speciesID = recode(species,
+                            'vv' = 'VV',
+                            'vm' = 'VM')) %>%
+  # Create column for full species names, and match DURIN data standards
+  mutate(species = recode(species,
+                          'vv'= 'Vaccinium vitis-idaea',
+                          'vm' = 'Vaccinium myrtillus')) %>%
+  # Remove columns not needed
+  select(!ANO_pointID2) %>%
+  # Test create new ANO_flatID column removing additional 0 in front
+  mutate(ANO_flatID2 = as.numeric(str_remove(ANO_flatID, "^0+")))
+Gradient.df2 <- Gradient.df2 %>%
+  # Next issue is variable ways that the ANO_flatID has been entered (number of digits)
+  # With 2, 3 and 4 letter codes we change the Prefix we add
+  # With the values above 1000, we don't want the 0's at all
+  mutate(ano_punkt = case_when(
+    ANO_flatID2 > 0 & ANO_flatID2 <= 99 ~ paste0("ANO00", Gradient.df2$ANO_flatID2, "_", Gradient.df2$ANO_pointID),
+    ANO_flatID2 >= 100 & ANO_flatID2 <= 999 ~ paste0("ANO0", Gradient.df2$ANO_flatID2, "_", Gradient.df2$ANO_pointID),
+    ANO_flatID2 >= 1000 ~ paste0("ANO", Gradient.df2$ANO_flatID2, "_", Gradient.df2$ANO_pointID),
+                               TRUE ~ NA))
+
+# ANO Sites
+ANO_sites2 <-  ANO_sites %>%  # Test create new ANO_flatID column removing additional 0 in front
+  mutate(ANO_flatID2 = as.numeric(str_remove(ANO_flatID, "^0+")))
+  # Next issue is variable ways that the ANO_flatID has been entered (number of digits)
+  # With 2, 3 and 4 letter codes we change the Prefix we add
+  # With the values above 1000, we don't want the 0's at all
+ANO_sites2 <- ANO_sites2 %>% 
+  mutate(ano_punkt = case_when(
+    ANO_flatID2 > 0 & ANO_flatID2 <= 99 ~ paste0("ANO00", Gradient.df2$ANO_flatID2, "_", Gradient.df2$ANO_pointID),
+    ANO_flatID2 >= 100 & ANO_flatID2 <= 999 ~ paste0("ANO0", Gradient.df2$ANO_flatID2, "_", Gradient.df2$ANO_pointID),
+    ANO_flatID2 >= 1000 ~ paste0("ANO", Gradient.df2$ANO_flatID2, "_", Gradient.df2$ANO_pointID),
+    TRUE ~ NA))
+##########################
+#TODO:
+# Edit Pål's rows, as all plants are listed as individual 1 atm, whereas we need to use the unique ID column to change this.
+# Kristine sent through the dataset with the uniqueID, so cross-reference against that
+
+# For LGV and PT, need to check branch numbers vs branch scars.
+# For AH, KB, SG, and maybe MK we counted the number of branches removed (base of branch) from the main stem.
+# However, LGV and PT counted the number of tips on the branches removed.
+
+# LGV and PT leaf scars vs leaf counts. They have leaf scars in addition to the leaf counts
+# AH, KB, SG and maybe MK have removed leaves and counted, then counted all scars remaining on the branch. 
+
+
+
+
+
+
+# Update ano_punkt so only climate gradient sites exist (as they can be matched)
+# So all sites with forest/open design (i.e. 4corners and VCG are as NA's, and Finland samples)
+Gradient.df2 <- Gradient.df2 %>%
+  mutate(ano_punkt = case_when(
+    habitat %in% c("Open", "Forest") ~ NA,
+    .default = as.character(ano_punkt)
+  ))
+
+# Filter the ANO plot co-ordinate and climate data to keep only distinct records for each location
+all_coords_distinct <- all_coords %>%
+  distinct(ano_punkt, .keep_all = TRUE)
+
+# Create a dataframe just for the sites with coordinates for climate plotting
+Gradient.df3 <- Gradient.df2 %>%
+  left_join(all_coords_distinct, join_by(ano_punkt)) %>% 
+  mutate(
+    leaf_stem_ratio_main = leaf_weight / stem_weight,
+    total_biomass = rowSums(select(., leaf_weight:sidebranches_weight), na.rm = TRUE))
+  
+
+# Create a dataframe for just the ANO sampled sites, and link to ANO climate data
+ANO_site_climate <- ANO_sites %>%
+  left_join(all_coords_distinct, join_by(ano_punkt))
+
+
+######################
+# Plots
+
+## Define colour palette (used with scale fill manual)
+Habitat <- c("Forest" = "#083508", "Open" = "#589758")
+Species <- c("Vaccinium myrtillus" = "#087e8b",   # berry colour option "#323284"
+             "Vaccinium vitis-idaea" =  "#eb5461") # berry colour option "#D93137"
+siteID <- c("Lygra" = "#4A235A",
+            "Sogndal" = "#154360",
+            "Senja" = "#C39BD3",
+            "Kautokeino" = "#5499C7")
+
+
+# Do a test plot of climate space we sampled across
+(plot <- ggplot(data = Gradient.df3) +
+  geom_jitter(aes(x = precipitation_Annual,
+                  y = temperature_WQ,
+                  colour = hovedtype),
+              # Slightly offset the plots so its easier to visualize the samples per site
+              height = 0.05, # change is in y-axis values (i.e. temperature)
+              width = 25, # change is in x-axis values (i.e. precipitation)
+              size = 2))
+
+
+# Do a test plot of climate space we sampled across
+(plot_ANO_climate <- ggplot(data = ANO_site_climate) +
+    geom_jitter(aes(x = precipitation_Annual,
+                    y = temperature_WQ,
+                    colour = hovedtype),
+                # Slightly offset the plots so its easier to visualize the samples per site
+                height = 0.1, # change is in y-axis values (i.e. temperature)
+                width = 25, # change is in x-axis values (i.e. precipitation)
+                size = 2) +
+    theme_classic() +
+    labs(x = "Precipitation (annual, mm/yr)", y = "Temperature (Warmest Quarter)", colour = "Vegetation Type") )
+
+# Test plot of trait against a climate space - temperature
+(plot_height_temp <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                    y = plant_height_cm,
+                    colour = hovedtype)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+    )
+
