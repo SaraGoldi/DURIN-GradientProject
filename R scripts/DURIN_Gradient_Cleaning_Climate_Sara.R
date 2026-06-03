@@ -1,7 +1,7 @@
 # Load the required libraries
 
 # TO install packages the first time, run this code
-install.packages("ggpubr")
+# install.packages("ggpubr")
 
 # once installed, run this code
 library(tidyverse)
@@ -16,10 +16,6 @@ library(emmeans)
 library(tidyr)
 library(ggthemes)
 library(ggpubr)
-
-library(dplyr)
-library(tibble)
-library(stringr)
 
 
 # Import the dataset for the field and lab
