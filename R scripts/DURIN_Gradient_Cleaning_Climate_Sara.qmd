@@ -306,3 +306,53 @@ ANO_site_climate <- ANO_sites %>%
   left_join(all_coords_distinct, join_by(ano_punkt))
 
 ```
+
+## Plots
+
+```{r plots_setup}
+
+## Define colour palette (used with scale fill manual)
+Habitat <- c("Forest" = "#083508", "Open" = "#589758")
+Species <- c("Vaccinium myrtillus" = "#087e8b",   # berry colour option "#323284"
+             "Vaccinium vitis-idaea" =  "#eb5461") # berry colour option "#D93137"
+siteID <- c("Lygra" = "#4A235A",
+            "Sogndal" = "#154360",
+            "Senja" = "#C39BD3",
+            "Kautokeino" = "#5499C7")
+```
+
+```{r test_plots}
+
+# Do a test plot of climate space we sampled across
+(plot <- ggplot(data = Gradient.df3) +
+    geom_jitter(aes(x = precipitation_Annual,
+                    y = temperature_WQ,
+                    colour = hovedtype),
+                # Slightly offset the plots so its easier to visualize the samples per site
+                height = 0.05, # change is in y-axis values (i.e. temperature)
+                width = 25, # change is in x-axis values (i.e. precipitation)
+                size = 2))
+
+
+# Do a test plot of climate space we sampled across
+(plot_ANO_climate <- ggplot(data = ANO_site_climate) +
+    geom_jitter(aes(x = precipitation_Annual,
+                    y = temperature_WQ,
+                    colour = hovedtype),
+                # Slightly offset the plots so its easier to visualize the samples per site
+                height = 0.1, # change is in y-axis values (i.e. temperature)
+                width = 25, # change is in x-axis values (i.e. precipitation)
+                size = 2) +
+    theme_classic() +
+    labs(x = "Precipitation (annual, mm/yr)", y = "Temperature (Warmest Quarter)", colour = "Vegetation Type") )
+
+# Test plot of trait against a climate space - temperature
+(plot_height_temp <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = plant_height_cm,
+                   colour = hovedtype)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+```
