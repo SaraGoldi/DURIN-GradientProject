@@ -23,7 +23,7 @@ library(stringr)
 
 
 # Import the dataset for the field and lab
-Gradient.df <- read_excel("C:/Users/sarag/Uni/Between the Fjords/Gradient sampling 2024 - DurinV4.xlsx",
+Gradient.df <- read_excel("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV4.xlsx",
                           col_types = c("guess", "text", "text", "text",
                                         "text", "text", "text", "numeric",
                                         "numeric", "numeric", "numeric", "text",
@@ -31,14 +31,14 @@ Gradient.df <- read_excel("C:/Users/sarag/Uni/Between the Fjords/Gradient sampli
                                         "numeric","numeric", "numeric", "numeric",
                                         "numeric", "numeric", "numeric", "text",
                                         "text", "text", "text", "text", "text", "text", "text", "text"))
-Gradient.dfv2 <- read_csv("C:/Users/sarag/Uni/Between the Fjords/Gradient sampling 2024 - DurinV4.csv"
+Gradient.dfv2 <- read_csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV4.csv"
                           )
 
 # Import ANO site and climate data
-all_coords <- read.csv("C:/Users/sarag/Uni/Between the Fjords/all_coords.csv")
+all_coords <- read.csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/all_coords.csv")
 
 # Sampled ANO sites
-ANO_sites <- read_excel("C:/Users/sarag/Uni/Between the Fjords/Gradient sampling 2024 - DurinV4.xlsx",
+ANO_sites <- read_excel("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV4.xlsx",
                         sheet = "ANOSampledSites",
                           col_types = c("guess", "text", "text", "text", "text"))
 
