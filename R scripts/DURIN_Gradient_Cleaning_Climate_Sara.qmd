@@ -321,6 +321,14 @@ siteID <- c("Lygra" = "#4A235A",
             "Kautokeino" = "#5499C7")
 ```
 
+Test plots:
+
+- habitat types across temperature and precipitation gradient
+
+- Vegetation types across temperature and precipitation gradient
+
+- Temperature impact on Plant Height (by vegetation type)
+
 ```{r test_plots}
 
 # Do a test plot of climate space we sampled across
