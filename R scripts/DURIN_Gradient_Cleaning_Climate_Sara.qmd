@@ -367,11 +367,15 @@ Test plots:
 
 More test plots:
 
-- Impact of Temperature on leaf weight
+- Variations of trait against a climate space plots
 
-```{r Sara_test_plots}
+  - leaf weight against temperature (by vegetation type)
 
-#test using weight data against temperature
+  - plant height against temperature (by species)
+
+```{r test_plots_trait/climate}
+
+# repeat test using weight data against temperature
 (plot_leafweight_temp <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = temperature_WQ,
                    y = leaf_weight,
@@ -385,5 +389,37 @@ sum(is.na(Gradient.df3$leaf_weight)) # 996 NAs, explains most of the removed row
 sum(is.na(Gradient.df3$hovedtype)) # 904
 sum(is.na(Gradient.df3$hovedtype) & is.na(Gradient.df3$leaf_weight)) # 875 overlap
 # only data either missing hovedtype and/or not yet weighed was omitted, all good
+
+
+# now with species instead of vegetation type
+(plot_height_temp2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = plant_height_cm,
+                   colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+
+```
+
+Additional test plots
+
+- showing temperature and precipitation across space
+
+```{r test_plots_Sara}
+
+# temperature and precipiation across space
+(plot_space_climate <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = latitude,
+                   y = longitude,
+                   colour = temperature_WQ,
+                   size = precipitation_Annual)) +
+    scale_colour_gradient(low = "blue", high = "red")+
+    labs(x = "Latitude", y = "Longitude", colour = "Temperature") +
+    theme_classic2()
+)
+
+
 
 ```
