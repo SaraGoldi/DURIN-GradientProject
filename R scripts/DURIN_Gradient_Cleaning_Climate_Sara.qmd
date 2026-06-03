@@ -1,0 +1,156 @@
+---
+title: "DURIN_Gradient_Cleaning_Climate_Sara"
+author: "Sonya R. Geange"
+format: html
+editor: visual
+---
+
+## Introduction to Project
+
+Can add a few lines here about what this script is trying to achieve.
+
+## Install and load packages, Import Data
+
+<!--# this is how you add comments -->
+
+```{r load_packages}
+#| message: false
+
+# Load the required libraries
+
+# Toinstall packages the first time, run this code
+# install.packages("name")
+
+# once installed, run this code
+library(tidyverse)
+library(readxl)
+library(ggplot2)
+library(grid)
+library(xlsx)
+library(RColorBrewer)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+library(tidyr)
+library(ggthemes)
+library(ggpubr)
+```
+
+You can add many 'chunks' of code under the headers, and each can run seperately.
+
+```{r import_data}
+#| echo: false
+#| warning: false
+# Import the dataset for the field and lab
+Gradient.df <- read_excel("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV4.xlsx",
+                          col_types = c("guess", "text", "text", "text",
+                                        "text", "text", "text", "numeric",
+                                        "numeric", "numeric", "numeric", "text",
+                                        "numeric", "numeric", "numeric", "numeric",
+                                        "numeric","numeric", "numeric", "numeric",
+                                        "numeric", "numeric", "numeric", "text",
+                                        "text", "text", "text", "text", "text", "text", "text", "text"))
+Gradient.dfv2 <- read_csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV4.csv"
+                          )
+
+# Import ANO site and climate data
+all_coords <- read.csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/all_coords.csv")
+
+# Sampled ANO sites
+ANO_sites <- read_excel("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV4.xlsx",
+                        sheet = "ANOSampledSites",
+                          col_types = c("guess", "text", "text", "text", "text"))
+
+```
+
+new chunk
+
+```{r four_corners}
+
+gradient.four.corner.df <- Gradient.dfv2 %>%
+  # Drop fill the other columns to complete meta-data
+  fill(date, .direction = "down") %>%
+  fill(ANO_flatID, .direction = "down") %>%
+  # Filter to the DURIN 4 Corner sites
+  filter(ANO_flatID %in% c("SE_O",
+                           "SE_F",
+                           "KA_O",
+                           "KA_F",
+                           "SO_F",
+                           "SO_O",
+                           "LY_O",
+                           "LY_F",
+                           "KK_O",
+                           "KK_F")) %>%
+  # Drop fill only the key columns to help split the dataset
+  fill(ANO_pointID, .direction = "down") %>%
+  fill(habitat, .direction = "down") %>%
+  fill(collector, .direction = "down") %>%
+  fill(NiN_type, .direction = "down") %>%
+  fill(species, .direction = "down") %>%
+  fill(individual_nr, .direction = "down") %>%
+  fill(plant_height_cm, .direction = "down") %>%
+  fill(length_lb_cm, .direction = "down") %>%
+  fill(nr_segments_lb, .direction = "down")  %>%
+  # Making sure that the data columns are numeric
+  mutate(across(c(plant_height_cm,
+                  length_lb_cm,
+                  nr_segments_lb),
+                as.numeric)) %>%
+  mutate(across(c(
+    length_mm,
+    nr_leaves,
+    nr_scars,
+    nr_branch_scars,
+    nr_side_branches,
+    nr_fruits,
+    leaf_weight,
+    stem_weight,
+    fruit_weight,
+    branches_weight,
+    sidebranches_weight),
+    as.numeric)) %>%
+  mutate(across(c(Segment),
+                as.character)) %>%
+  # Change the spelling of 'KK_F' and 'KK_O' to match correct format
+  # During processing KA's and KK's were accidnetly duplicated during data entry of field information
+  # Only KK's should be kept as these have field and lab data (weights)
+  filter(ANO_flatID %in% c("KK_O", "KK_F",
+                           "SE_O", "SE_F",
+                           "SO_O", "SO_F",
+                           "LY_O", "LY_F")) %>%
+  # Rename KK's to KA's to keep naming structure
+  mutate(ANO_flatID = recode(ANO_flatID,
+                             'KK_F'='KA_F',
+                             'KK_O' = 'KA_O')) %>%
+  # Change spelling of 'open' to 'Open' to match DURIN formatting standards
+  mutate(habitat = recode(habitat,
+                          'open'='Open',
+                          'forest'='Forest')) %>%
+  # Create a new siteID column, and use info in ANO_flatID to allocate sites
+  mutate(siteID = recode(ANO_flatID,
+                         'SE_O' = 'Senja',
+                         'SE_F' = 'Senja',
+                         'KA_O' = 'Kautokeino',
+                         'KA_F' = 'Kautokeino',
+                         'SO_F' = 'Sogndal',
+                         'SO_O' = 'Sogndal',
+                         'LY_O' = 'Lygra',
+                         'LY_F' = 'Lygra')) %>%
+  # Change spelling of species and column name to match DURIN data standards
+  mutate(speciesID = recode(species,
+                            'vv' = 'VV',
+                            'vm' = 'VM')) %>%
+  # Create column for full species names, and match DURIN data standards
+  mutate(species = recode(species,
+                          'vv'= 'Vaccinium vitis-idaea',
+                          'vm' = 'Vaccinium myrtillus')) %>%
+  # Add context for the sites
+  mutate(geography = factor(siteID, levels = c("Lygra", "Senja", "Sogndal", "Kautokeino"),
+                            labels = c("South", "North", "South", "North"))) %>%
+  mutate(oceanity = factor(siteID, levels = c("Lygra", "Senja", "Sogndal", "Kautokeino"),
+                           labels = c("Coast", "Coast", "Inland", "Inland"))) %>% 
+  mutate(
+    leaf_stem_ratio_main = leaf_weight / stem_weight,
+    total_biomass = rowSums(select(., leaf_weight:sidebranches_weight), na.rm = TRUE))
+```
