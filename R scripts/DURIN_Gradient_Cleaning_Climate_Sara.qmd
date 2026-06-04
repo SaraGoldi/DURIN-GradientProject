@@ -91,7 +91,7 @@ gradient.four.corner.df <- Gradient.dfv2 %>%
   fill(plant_height_cm, .direction = "down") %>%
   fill(length_lb_cm, .direction = "down") %>%
   fill(nr_segments_lb, .direction = "down")  %>%
-  # Making sure that the data columns are numeric
+  # Making sure that the data columns are numeric, Segment column as character
   mutate(across(c(plant_height_cm,
                   length_lb_cm,
                   nr_segments_lb),
@@ -144,7 +144,7 @@ gradient.four.corner.df <- Gradient.dfv2 %>%
   mutate(species = recode(species,
                           'vv'= 'Vaccinium vitis-idaea',
                           'vm' = 'Vaccinium myrtillus')) %>%
-  # Add context for the sites
+  # Add context for the sites (e.g. Lygra is in the South and by the Coast)
   mutate(geography = factor(siteID, levels = c("Lygra", "Senja", "Sogndal", "Kautokeino"),
                             labels = c("South", "North", "South", "North"))) %>%
   mutate(oceanity = factor(siteID, levels = c("Lygra", "Senja", "Sogndal", "Kautokeino"),
@@ -152,6 +152,7 @@ gradient.four.corner.df <- Gradient.dfv2 %>%
   mutate(
     leaf_stem_ratio_main = leaf_weight / stem_weight,
     total_biomass = rowSums(select(., leaf_weight:sidebranches_weight), na.rm = TRUE))
+# add a new column for Leaf/stem ratio and total biomass to be calculated based on existing weight column content
 ```
 
 ```{r climate}
@@ -163,6 +164,7 @@ Gradient.df2 <- Gradient.dfv2 %>%
   # Date, the ANO_flatID which is a mix of climate, 4corners and VCG coding and in some instance ANO + pointID
   fill(date, .direction = "down") %>%
   fill(ANO_flatID, .direction = "down") %>%
+  # filter out (remove) four corner sites
   filter(! ANO_flatID %in% c("SE_O", "SE_F",
                              "KA_O", "KA_F",
                              "KK_O", "KK_F",
