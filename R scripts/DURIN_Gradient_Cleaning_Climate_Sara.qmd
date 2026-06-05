@@ -442,7 +442,11 @@ Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype,
 
 Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype,
                                  levels = c('Nakent berg', 'Åpen grunnlendt mark', 'Fjellhei leside og tundra', 'Fastmarksskogsmark', 'Skogsmark', 'Rabbe', 'Grus- og steindominert strand og strandlinje', 'Boreal hei', 'Semi-naturlig eng', 'Åpen jordvannsmyr', 'Myr- og sumpskogsmark', 'Nedbørsmyr'))
-# reordering by NiN types
+# reordering by NiN types, T for Fastmarkssystemer and V for Våtmarkssystemer 
+
+## should Skogsmark also be called Fastmarksskogsmark?
+Gradient.df3 <- Gradient.df3 %>% 
+  mutate(hovedtype = recode(hovedtype, 'Skogsmark'='Fastmarksskogsmark'))
 ```
 
 Corrected spellings
