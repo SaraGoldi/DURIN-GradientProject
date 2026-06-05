@@ -428,7 +428,7 @@ Additional test plots
 
 Names of vegetation types
 
-```{r Vegetation_types}
+```{r cleaning_vegetation_types}
 
 unique(Gradient.df3$hovedtype)
 class(Gradient.df3$hovedtype)
