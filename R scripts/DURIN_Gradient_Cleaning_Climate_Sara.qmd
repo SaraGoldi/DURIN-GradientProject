@@ -51,6 +51,7 @@ Gradient.df <- read_excel("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_da
                                         "text", "text", "text", "text", "text", "text", "text", "text"))
 Gradient.dfv2 <- read_csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV5.csv", locale=locale(encoding="latin1")
                           )
+## the latin1 encoding introduced a problem here: added names to empty columns, need to be removed
 
 # Import ANO site and climate data
 all_coords <- read.csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/all_coords.csv")
