@@ -309,6 +309,29 @@ ANO_site_climate <- ANO_sites %>%
 
 ```
 
+Names of vegetation types
+
+```{r cleaning_vegetation_types}
+
+unique(Gradient.df3$hovedtype)
+class(Gradient.df3$hovedtype)
+Gradient.df3$hovedtype <- as.factor(Gradient.df3$hovedtype)
+levels(Gradient.df3$hovedtype)
+
+Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype, 
+                                 labels = c('Åpen grunnlendt mark', 'Åpen jordvannsmyr', 'Boreal hei', 'Fastmarksskogsmark', 'Fjellhei leside og tundra', 'Grus- og steindominert strand og strandlinje', 'Myr- og sumpskogsmark', 'Nakent berg', 'Nedbørsmyr', 'Rabbe', 'Semi-naturlig eng', 'Skogsmark'))
+# renaming 
+# having set file encoding option to "latin1" in the beginning when first importing the data helps R interspret the special letters correctly
+
+Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype,
+                                 levels = c('Nakent berg', 'Åpen grunnlendt mark', 'Fjellhei leside og tundra', 'Fastmarksskogsmark', 'Skogsmark', 'Rabbe', 'Grus- og steindominert strand og strandlinje', 'Boreal hei', 'Semi-naturlig eng', 'Åpen jordvannsmyr', 'Myr- og sumpskogsmark', 'Nedbørsmyr'))
+# reordering by NiN types, T for Fastmarkssystemer and V for Våtmarkssystemer 
+
+## should Skogsmark also be called Fastmarksskogsmark?
+Gradient.df3 <- Gradient.df3 %>% 
+  mutate(hovedtype = recode(hovedtype, 'Skogsmark'='Fastmarksskogsmark'))
+```
+
 ## Plots
 
 ```{r plots_setup}
@@ -375,7 +398,7 @@ More test plots:
 
   - plant height against temperature (by species)
 
-```{r test_plots_trait/climate}
+```{r test_plots_2}
 
 # repeat test using weight data against temperature
 (plot_leafweight_temp <- ggplot(data = Gradient.df3) +
@@ -409,7 +432,7 @@ Additional test plots
 
 - showing temperature and precipitation across space
 
-```{r test_plots_Sara}
+```{r test_plots_climate/space}
 
 # temperature and precipiation across space
 (plot_space_climate <- ggplot(data = Gradient.df3) +
@@ -421,32 +444,6 @@ Additional test plots
     labs(x = "Latitude", y = "Longitude", colour = "Temperature") +
     theme_classic2()
 )
-
-
-
-```
-
-Names of vegetation types
-
-```{r cleaning_vegetation_types}
-
-unique(Gradient.df3$hovedtype)
-class(Gradient.df3$hovedtype)
-Gradient.df3$hovedtype <- as.factor(Gradient.df3$hovedtype)
-levels(Gradient.df3$hovedtype)
-
-Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype, 
-                                 labels = c('Åpen grunnlendt mark', 'Åpen jordvannsmyr', 'Boreal hei', 'Fastmarksskogsmark', 'Fjellhei leside og tundra', 'Grus- og steindominert strand og strandlinje', 'Myr- og sumpskogsmark', 'Nakent berg', 'Nedbørsmyr', 'Rabbe', 'Semi-naturlig eng', 'Skogsmark'))
-# renaming 
-# having set file encoding option to "latin1" in the beginning when first importing the data helps R interspret the special letters correctly
-
-Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype,
-                                 levels = c('Nakent berg', 'Åpen grunnlendt mark', 'Fjellhei leside og tundra', 'Fastmarksskogsmark', 'Skogsmark', 'Rabbe', 'Grus- og steindominert strand og strandlinje', 'Boreal hei', 'Semi-naturlig eng', 'Åpen jordvannsmyr', 'Myr- og sumpskogsmark', 'Nedbørsmyr'))
-# reordering by NiN types, T for Fastmarkssystemer and V for Våtmarkssystemer 
-
-## should Skogsmark also be called Fastmarksskogsmark?
-Gradient.df3 <- Gradient.df3 %>% 
-  mutate(hovedtype = recode(hovedtype, 'Skogsmark'='Fastmarksskogsmark'))
 ```
 
 ## PCA
