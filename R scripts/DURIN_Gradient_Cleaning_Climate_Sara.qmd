@@ -425,3 +425,46 @@ Additional test plots
 
 
 ```
+
+Names of vegetation types
+
+```{r Vegetation_types}
+
+unique(Gradient.df3$hovedtype)
+class(Gradient.df3$hovedtype)
+Gradient.df3$hovedtype <- as.factor(Gradient.df3$hovedtype)
+levels(Gradient.df3$hovedtype)
+
+Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype, 
+                                 labels = c('Åpen grunnlendt mark', 'Åpen jordvannsmyr', 'Boreal hei', 'Fastmarksskogsmark', 'Fjellhei leside og tundra', 'Grus- og steindominert strand og strandlinje', 'Myr- og sumpskogsmark', 'Nakent berg', 'Nedbørsmyr', 'Rabbe', 'Semi-naturlig eng', 'Skogsmark'))
+# renaming 
+# having set file encoding option to "latin1" in the beginning when first importing the data helps R interspret the special letters correctly
+
+Gradient.df3$hovedtype <- factor(Gradient.df3$hovedtype,
+                                 levels = c('Nakent berg', 'Åpen grunnlendt mark', 'Fjellhei leside og tundra', 'Fastmarksskogsmark', 'Skogsmark', 'Rabbe', 'Grus- og steindominert strand og strandlinje', 'Boreal hei', 'Semi-naturlig eng', 'Åpen jordvannsmyr', 'Myr- og sumpskogsmark', 'Nedbørsmyr'))
+# reordering by NiN types
+```
+
+Corrected spellings
+
+T1 Nakent berg
+
+T2 Åpen grunnlendt mark
+
+T3 Fjellhei, leside og tundra
+
+T4 Fastmarksskogsmark (sometimes called just "Skogsmark", same NiN types)
+
+T14 Rabbe
+
+T29 Grus- og steindominert strand og strandlinje
+
+T31 Boreal hei
+
+T32 Semi-naturlig eng
+
+V1 Åpen jordvannsmyr
+
+V2 Myr- og sumpskogsmark
+
+V3 Nedbørsmyr
