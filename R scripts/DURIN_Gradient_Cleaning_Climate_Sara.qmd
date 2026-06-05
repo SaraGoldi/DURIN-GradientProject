@@ -346,17 +346,17 @@ siteID <- c("Lygra" = "#4A235A",
             "Kautokeino" = "#5499C7")
 ```
 
-Test plots:
+#### Plots on sites and climate space
 
 - Vegetation types across temperature and precipitation gradient
 
 - Vegetation types across temperature and precipitation gradient, aesthetic changes
 
-- Temperature impact on Plant Height (by vegetation type)
+- Temperature and precipitation across space (coordinates)
 
 ```{r test_plots}
 
-# Do a test plot of climate space we sampled across
+#1 Do a test plot of climate space we sampled across
 (plot <- ggplot(data = Gradient.df3) +
     geom_jitter(aes(x = precipitation_Annual,
                     y = temperature_WQ,
@@ -367,7 +367,7 @@ Test plots:
                 size = 2))
 
 
-# Do a test plot of climate space we sampled across
+#2 Do a test plot of climate space we sampled across
 (plot_ANO_climate <- ggplot(data = ANO_site_climate) +
     geom_jitter(aes(x = precipitation_Annual,
                     y = temperature_WQ,
@@ -379,7 +379,36 @@ Test plots:
     theme_classic() +
     labs(x = "Precipitation (annual, mm/yr)", y = "Temperature (Warmest Quarter)", colour = "Vegetation Type") )
 
-# Test plot of trait against a climate space - temperature
+
+#3 temperature and precipiation across space
+(plot_space_climate <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = longitude,
+                   y = latitude,
+                   colour = temperature_WQ,
+                   size = precipitation_Annual)) +
+    scale_colour_gradient(low = "blue", high = "red")+
+    labs(x = "Longitude", y = "Latitude", colour = "Temperature") +
+    theme_classic2()
+)
+```
+
+#3 Interpretation:
+
+Distribution of plots across space, showing precipitation and temperature higher precipitation in the west (lower longitude) plots, low in the north
+
+#### Variations of trait against a climate space plots
+
+- Temperature impact on Plant Height (by vegetation type)
+
+- Temperature impact on leaf weight (by vegetation type)
+
+- Temperature impact on plant height (by species)
+
+```{r test_plots_2}
+
+# Test plots of trait against a climate space
+
+#1 plant_height/temperature + hovedtype
 (plot_height_temp <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = temperature_WQ,
                    y = plant_height_cm,
@@ -388,19 +417,8 @@ Test plots:
     theme_classic2()
 )
 
-```
-
-More test plots:
-
-- Variations of trait against a climate space plots
-
-  - leaf weight against temperature (by vegetation type)
-
-  - plant height against temperature (by species)
-
-```{r test_plots_2}
-
-# repeat test using weight data against temperature
+# repeat test of a variation
+#2 leaf_weight/temperature + hovedtype
 (plot_leafweight_temp <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = temperature_WQ,
                    y = leaf_weight,
@@ -410,13 +428,14 @@ More test plots:
 )
 
 # check to see if all samples that are weighed so far were included
-sum(is.na(Gradient.df3$leaf_weight)) # 996 NAs, explains most of the removed rows
-sum(is.na(Gradient.df3$hovedtype)) # 904
-sum(is.na(Gradient.df3$hovedtype) & is.na(Gradient.df3$leaf_weight)) # 875 overlap
+#sum(is.na(Gradient.df3$leaf_weight)) # 996 NAs, explains most of the removed rows
+#sum(is.na(Gradient.df3$hovedtype)) # 904
+#sum(is.na(Gradient.df3$hovedtype) & is.na(Gradient.df3$leaf_weight)) # 875 overlap
 # only data either missing hovedtype and/or not yet weighed was omitted, all good
+# no need to run this part every time
 
 
-# now with species instead of vegetation type
+#3 plant_height/temperature + species
 (plot_height_temp2 <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = temperature_WQ,
                    y = plant_height_cm,
@@ -428,23 +447,7 @@ sum(is.na(Gradient.df3$hovedtype) & is.na(Gradient.df3$leaf_weight)) # 875 overl
 
 ```
 
-Additional test plots
-
-- showing temperature and precipitation across space
-
-```{r test_plots_climate/space}
-
-# temperature and precipiation across space
-(plot_space_climate <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = latitude,
-                   y = longitude,
-                   colour = temperature_WQ,
-                   size = precipitation_Annual)) +
-    scale_colour_gradient(low = "blue", high = "red")+
-    labs(x = "Latitude", y = "Longitude", colour = "Temperature") +
-    theme_classic2()
-)
-```
+Initial observations on impact of temperature on traits: increase height and leaf weight
 
 ## PCA
 
@@ -483,3 +486,7 @@ ggplot(PCA_df, aes(x = PC1, y = PC2, colour = species))+
   stat_ellipse(level = 0.95)
 
 ```
+
+Interpretation: clustering by species fairly clear for VV
+
+Also tried the same code with hovedtype -\> clustering not very strong, but that may change if more or different numerical measurements were used as a basis for the PCA
