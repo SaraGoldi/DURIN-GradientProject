@@ -407,7 +407,7 @@ higher precipitation in the west (lower longitude) plots, low in the north
 
 - Temperature impact on leaf weight (by vegetation type)
 
-- Temperature impact on plant height (by species)
+- Temperature impact on plant height (by species), also as boxplot
 
 ```{r test_plots_2}
 
@@ -449,12 +449,23 @@ higher precipitation in the west (lower longitude) plots, low in the north
     theme_classic2()
 )
 
+#3b boxplot plant_height/temperature + species
+(boxplot_height_temp <- ggplot(data = Gradient.df3) +
+    geom_boxplot(aes(x = temperature_WQ,
+                     y = plant_height_cm,
+                     colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Species") +
+    theme_classic2()
+)
+
 
 ```
 
 Initial observations on impact of temperature on traits: increase height and leaf weight
 
 #2 one outlier, very high leaf weight!
+
+#3 VM plants tend to be a bit taller than VV
 
 ## PCA
 
