@@ -429,12 +429,11 @@ higher precipitation in the west (lower longitude) plots, low in the north
     theme_classic2()
 )
 
-#2b boxplot plant_height/temperature + species
+#2b boxplot plant_height/species
 (boxplot_height_temp2 <- ggplot(data = Gradient.df3) +
-    geom_boxplot(aes(x = temperature_WQ,
-                     y = plant_height_cm,
-                     colour = species)) +
-    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Species") +
+    geom_boxplot(aes(x = species,
+                     y = plant_height_cm)) +
+    labs(x = "Species", y = "Plant Height (cm)") +
     theme_classic2()
 )
 
