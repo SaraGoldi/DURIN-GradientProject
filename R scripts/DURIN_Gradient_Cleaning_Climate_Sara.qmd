@@ -464,7 +464,7 @@ higher precipitation in the west (lower longitude) plots, low in the north
     ylim(0.0000, 1.0000) +
     theme_classic2()
 )
-# VV seems to overall be heavier, but is this the case for each year's growth equally?
+# VM seems to overall be heavier, but is this the case for each year's growth equally? 
 
 # broken down by year
 #5a 2024
@@ -542,7 +542,9 @@ Initial observations on impact of temperature on traits: size and weight tend to
 
 ```{r plots_species differences}
 
-# VM plants were heavier than VV in 2022, much more noticable than any patterns in the following years 
+# VM seems to generally be heavier, is this true for all seasons/traits?
+
+# VM plants were heavier than VV in 2022 (noticed from plot #5c in previous chunk), much more noticable than any patterns in the following years 
 
 # is this due to the segments being longer (stem_weight) or the number and weight of side branches (nr_side_branches and branches_weight)?
 
