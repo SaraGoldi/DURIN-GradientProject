@@ -430,7 +430,7 @@ higher precipitation in the west (lower longitude) plots, low in the north
 )
 
 #2b boxplot plant_height/temperature + species
-(boxplot_height_temp <- ggplot(data = Gradient.df3) +
+(boxplot_height_temp2 <- ggplot(data = Gradient.df3) +
     geom_boxplot(aes(x = temperature_WQ,
                      y = plant_height_cm,
                      colour = species)) +
@@ -453,16 +453,113 @@ higher precipitation in the west (lower longitude) plots, low in the north
 #sum(is.na(Gradient.df3$hovedtype) & is.na(Gradient.df3$leaf_weight)) # 875 overlap
 # only data either missing hovedtype and/or not yet weighed was omitted, all good
 # no need to run this part every time
+
+#4 leaf_weight/temperature + species
+(plot_leafweight_temp2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = leaf_weight,
+                   colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Leaf Weight (g)", colour = "Species") +
+    theme_classic2()
+)
+
+#5 length_lb/temperature + hovedtype
+(plot_length_temp <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = length_lb_cm,
+                   colour = hovedtype)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+#6 length_lb/temperature + species
+(plot_length_temp2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = length_lb_cm,
+                   colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Longest Branch Length (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+
 ```
 
 Initial observations on impact of temperature on traits: increase height and leaf weight
 
-#2 one outlier, very high leaf weight!
+#2 and #2b VM plants tend to be a bit taller than VV
 
-#3 VM plants tend to be a bit taller than VV
+#3 and #4 show one outlier in leaf weight!
+
+#5 and #6 show some VM plants from Fastmarksskogmark have especially long branches
 
 ```{r plots_trait-precipitation}
 
+# same plots as above with precipation instead of temperature
+
+#1 plant_height/precipitation + hovedtype
+(plot_height_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = plant_height_cm,
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", y = "Plant Height (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+#2 plant_height/precipitation + species
+(plot_height_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = plant_height_cm,
+                   colour = species)) +
+    labs(x = "Annual Precipitation", y = "Plant Height (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+
+#3 leaf_weight/precipitation + hovedtype
+(plot_leafweight_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = leaf_weight,
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", y = "Leaf Weight (g)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+
+#4 leaf_weight/precipitation + species
+(plot_leafweight_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = leaf_weight,
+                   colour = species)) +
+    labs(x = "Annual Precipitation", y = "Leaf Weight (g)", colour = "Species") +
+    theme_classic2()
+)
+
+#5 length_lb/precipitation + hovedtype
+(plot_length_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = length_lb_cm,
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+#6 length_lb/precipitation + species
+(plot_length_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = length_lb_cm,
+                   colour = species)) +
+    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Species") +
+    theme_classic2()
+)
+```
+
+Patterns much less clear with precipitation than with temperature
+
+Plant size traits seem to peek around 1200 mm annual precipitation, except for the especially tall VM plants from Fastmarksskogmark
+
+#### Relationships between traits
+
+```{r plots_trait-relationships}
 
 ```
 
