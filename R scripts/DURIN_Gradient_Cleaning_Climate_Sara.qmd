@@ -438,7 +438,25 @@ higher precipitation in the west (lower longitude) plots, low in the north
     theme_classic2()
 )
 
-#3 leaf_weight/temperature + hovedtype
+#3 length_lb/temperature + hovedtype
+(plot_length_temp <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = length_lb_cm,
+                   colour = hovedtype)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+#4 length_lb/temperature + species
+(plot_length_temp2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = length_lb_cm,
+                   colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Longest Branch Length (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+# leaf_weight/temperature + hovedtype
 (plot_leafweight_temp <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = temperature_WQ,
                    y = leaf_weight,
@@ -454,7 +472,7 @@ higher precipitation in the west (lower longitude) plots, low in the north
 # only data either missing hovedtype and/or not yet weighed was omitted, all good
 # no need to run this part every time
 
-#4 leaf_weight/temperature + species
+# leaf_weight/temperature + species
 (plot_leafweight_temp2 <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = temperature_WQ,
                    y = leaf_weight,
@@ -463,34 +481,15 @@ higher precipitation in the west (lower longitude) plots, low in the north
     theme_classic2()
 )
 
-#5 length_lb/temperature + hovedtype
-(plot_length_temp <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = temperature_WQ,
-                   y = length_lb_cm,
-                   colour = hovedtype)) +
-    labs(x = "Temperature (Warmest Quarter)", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
-    theme_classic2()
-)
-
-#6 length_lb/temperature + species
-(plot_length_temp2 <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = temperature_WQ,
-                   y = length_lb_cm,
-                   colour = species)) +
-    labs(x = "Temperature (Warmest Quarter)", y = "Longest Branch Length (cm)", colour = "Species") +
-    theme_classic2()
-)
-
-
 ```
 
 Initial observations on impact of temperature on traits: increase height and leaf weight
 
 #2 and #2b VM plants tend to be a bit taller than VV
 
-#3 and #4 show one outlier in leaf weight!
+#3 and #4 show some VM plants from Fastmarksskogmark have especially long branches
 
-#5 and #6 show some VM plants from Fastmarksskogmark have especially long branches
+\# one outlier in leaf weight!
 
 ```{r plots_trait-precipitation}
 
@@ -514,8 +513,25 @@ Initial observations on impact of temperature on traits: increase height and lea
     theme_classic2()
 )
 
+#3 length_lb/precipitation + hovedtype
+(plot_length_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = length_lb_cm,
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
 
-#3 leaf_weight/precipitation + hovedtype
+#4 length_lb/precipitation + species
+(plot_length_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = length_lb_cm,
+                   colour = species)) +
+    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+# leaf_weight/precipitation + hovedtype
 (plot_leafweight_prec <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = precipitation_Annual,
                    y = leaf_weight,
@@ -525,7 +541,7 @@ Initial observations on impact of temperature on traits: increase height and lea
 )
 
 
-#4 leaf_weight/precipitation + species
+# leaf_weight/precipitation + species
 (plot_leafweight_prec2 <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = precipitation_Annual,
                    y = leaf_weight,
@@ -534,23 +550,7 @@ Initial observations on impact of temperature on traits: increase height and lea
     theme_classic2()
 )
 
-#5 length_lb/precipitation + hovedtype
-(plot_length_prec <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = length_lb_cm,
-                   colour = hovedtype)) +
-    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
-    theme_classic2()
-)
 
-#6 length_lb/precipitation + species
-(plot_length_prec2 <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = length_lb_cm,
-                   colour = species)) +
-    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Species") +
-    theme_classic2()
-)
 ```
 
 Patterns much less clear with precipitation than with temperature
