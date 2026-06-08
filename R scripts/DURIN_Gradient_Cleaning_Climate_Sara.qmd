@@ -542,12 +542,12 @@ Initial observations on impact of temperature on traits: size and weight tend to
 
 ```{r plots_species differences}
 
-# VV plants were lighter than VM in 2022, much more noticable than any patterns in the following years 
+# VM plants were heavier than VV in 2022, much more noticable than any patterns in the following years 
 
 # is this due to the segments being longer (stem_weight) or the number and weight of side branches (nr_side_branches and branches_weight)?
 
 #1a stem_weight(2022)/species boxplot
-(plot_stemweight_species_2022 <- ggplot(data = Gradient.df3.2022) +
+(boxplot_stemweight_species_2022 <- ggplot(data = Gradient.df3.2022) +
     geom_boxplot(aes(x = species,
                      y = stem_weight, colour = species)) +
     labs(x = "Species", y = "Stem weight (g) 2022") +
@@ -555,7 +555,7 @@ Initial observations on impact of temperature on traits: size and weight tend to
 )
 
 #1b branches_weight(2022)/species
-(plot_branchweight_species_2022 <- ggplot(data = Gradient.df3.2022) +
+(boxplot_branchweight_species_2022 <- ggplot(data = Gradient.df3.2022) +
     geom_boxplot(aes(x = species,
                      y = branches_weight, colour = species)) +
     labs(x = "Species", y = "Weight of Side Branches (g) 2022") +
@@ -565,7 +565,7 @@ Initial observations on impact of temperature on traits: size and weight tend to
 # is that because VM had more side branches in 2022?
 
 #1c nr_side_branches/species
-(plot_branchnr_species_2022 <- ggplot(data = Gradient.df3.2022) +
+(boxplot_branchnr_species_2022 <- ggplot(data = Gradient.df3.2022) +
     geom_boxplot(aes(x = species,
                      y = nr_side_branches, colour = species)) +  
     labs(x = "Species", y = "Number of Side Branches 2022") +
@@ -576,7 +576,7 @@ unique(Gradient.df3.2022$nr_side_branches)
 unique(Gradient.df3.2022$nr_branch_scars) # the max number of side branches should not exceed the number of branch scars (13)
 # due to frequent incorrect counts, using branch scar count as a proxy for number of side branches for now (note that sometimes not all side branches were actually present, so corrected counts are preferable)
 #1d branch_scars/species
-(plot_branchscar_species_2022 <- ggplot(data = Gradient.df3.2022) +
+(boxplot_branchscar_species_2022 <- ggplot(data = Gradient.df3.2022) +
     geom_boxplot(aes(x = species,
                      y = nr_branch_scars, colour = species)) +  
     labs(x = "Species", y = "Number of Branch Scars 2022") +
@@ -588,7 +588,7 @@ unique(Gradient.df3.2022$nr_branch_scars) # the max number of side branches shou
 # does this pattern persist in 2023?
 
 #2a stem_weight(2023)/species boxplot
-(plot_stemweight_species_2023 <- ggplot(data = Gradient.df3.2023) +
+(boxplot_stemweight_species_2023 <- ggplot(data = Gradient.df3.2023) +
     geom_boxplot(aes(x = species,
                      y = stem_weight, colour = species)) +
     labs(x = "Species", y = "Stem weight (g) 2023") +
@@ -596,28 +596,63 @@ unique(Gradient.df3.2022$nr_branch_scars) # the max number of side branches shou
 )
 
 #2b branches_weight(2022)/species
-(plot_branchweight_species_2023 <- ggplot(data = Gradient.df3.2023) +
+(boxplot_branchweight_species_2023 <- ggplot(data = Gradient.df3.2023) +
     geom_boxplot(aes(x = species,
                      y = branches_weight, colour = species)) +
     labs(x = "Species", y = "Weight of Side Branches (g) 2023") +
     theme_classic2()
 )
 
-# skipping 7c (nr_side_branches/species) for now
+# skipping 2c (nr_side_branches/species) for now
 
 #2d branch_scars/species
-(plot_branchscar_species_2023 <- ggplot(data = Gradient.df3.2023) +
+(boxplot_branchscar_species_2023 <- ggplot(data = Gradient.df3.2023) +
     geom_boxplot(aes(x = species,
                      y = nr_branch_scars, colour = species)) +  
     labs(x = "Species", y = "Number of Branch Scars 2023") +
     theme_classic2()
 )
 # pattern persists or even looks stronger in 2023, this is a general species difference, not something unique to the 2022 season
+
+#3 boxplots for total biomass by year and species
+(boxplot_biomass_year <- ggplot(data = Gradient.df3) +
+    geom_boxplot(aes(x = Segment,
+                     y = total_biomass, 
+                     colour = species)) +
+    labs(x = "Season", y = "Total Biomass (g)") +
+    ylim(0.0000, 1.0000) + # exclude the 286g outlier from 2024 (VV)
+    theme_classic2()
+  )
+
+# now compare leaf weight between species for 2024 (VM is deciduous, so no leaves from previous seasons)
+#4a boxplot for leaf weight by species
+(boxplot_leaf_weight_2024 <- ggplot(data = Gradient.df3.2024) +
+    geom_boxplot(aes(x = species,
+                     y = total_biomass, 
+                     colour = species)) +
+    labs(x = "Species", y = "Total Biomass (g)") +
+    theme_classic2() + 
+    ylim(0.0000, 1.0000)
+)
+
+#4b boxplot for leaf number (2024) by species 
+(boxplot_leaf_number_2024 <- ggplot(data = Gradient.df3.2024) +
+    geom_boxplot(aes(x = species,
+                     y = nr_leaves, 
+                     colour = species)) +
+    labs(x = "Species", y = "Leaf Number") +
+    theme_classic2() 
+)
+# VV tends to have more leaves 
 ```
 
 #1c Protocol issue with counting side branches (tip counting in some, base counting in others) needs to be resolved to make all datapoints comparable
 
 #2d and #2d VM branches more, need to be aware of this difference when comparing between species
+
+#3 and previous: Weight differences between VM and VV persist for main stem and side branches, VM is consistently heavier
+
+#4 higher leaf number in VV, overall leaf weight similar on average
 
 ```{r plots_trait-precipitation}
 
