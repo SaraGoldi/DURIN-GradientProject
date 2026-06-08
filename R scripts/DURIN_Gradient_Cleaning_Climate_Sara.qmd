@@ -51,7 +51,9 @@ Gradient.df <- read_excel("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_da
                                         "text", "text", "text", "text", "text", "text", "text", "text"))
 Gradient.dfv2 <- read_csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/Gradient sampling 2024 - DurinV5.csv", locale=locale(encoding="latin1")
                           )
-## the latin1 encoding introduced a problem here: added names to empty columns, need to be removed
+# the latin1 encoding introduced a problem here: added names to empty columns, need to be removed
+Gradient.dfv2 <- Gradient.dfv2 %>% 
+  select(-...33, -...34, -...35, -...36, -...37)
 
 # Import ANO site and climate data
 all_coords <- read.csv("C:/Users/sarag/Uni/DURIN Gradient Project/data/raw_data/all_coords.csv")
@@ -395,7 +397,9 @@ siteID <- c("Lygra" = "#4A235A",
 
 #3 Interpretation:
 
-Distribution of plots across space, showing precipitation and temperature higher precipitation in the west (lower longitude) plots, low in the north
+Distribution of plots across space, showing precipitation and temperature
+
+higher precipitation in the west (lower longitude) plots, low in the north
 
 #### Variations of trait against a climate space plots
 
@@ -449,6 +453,8 @@ Distribution of plots across space, showing precipitation and temperature higher
 ```
 
 Initial observations on impact of temperature on traits: increase height and leaf weight
+
+#2 one outlier, very high leaf weight!
 
 ## PCA
 
