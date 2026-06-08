@@ -351,11 +351,11 @@ siteID <- c("Lygra" = "#4A235A",
 
 #### Plots on sites and climate space
 
-- Vegetation types across temperature and precipitation gradient
+1.  Vegetation types across temperature and precipitation gradient
 
-- Vegetation types across temperature and precipitation gradient, aesthetic changes
+2.  Vegetation types across temperature and precipitation gradient, aesthetic changes
 
-- Temperature and precipitation across space (coordinates)
+3.  Temperature and precipitation across space (coordinates)
 
 ```{r test_plots}
 
@@ -403,13 +403,11 @@ higher precipitation in the west (lower longitude) plots, low in the north
 
 #### Variations of trait against a climate space plots
 
-- Temperature impact on Plant Height (by vegetation type)
+- impact of temperature on traits
 
-- Temperature impact on leaf weight (by vegetation type)
+- impact of precipitation on traits
 
-- Temperature impact on plant height (by species), also as boxplot
-
-```{r test_plots_2}
+```{r plots_trait-temperature}
 
 # Test plots of trait against a climate space
 
@@ -422,8 +420,25 @@ higher precipitation in the west (lower longitude) plots, low in the north
     theme_classic2()
 )
 
-# repeat test of a variation
-#2 leaf_weight/temperature + hovedtype
+#2 plant_height/temperature + species
+(plot_height_temp2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = plant_height_cm,
+                   colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+#2b boxplot plant_height/temperature + species
+(boxplot_height_temp <- ggplot(data = Gradient.df3) +
+    geom_boxplot(aes(x = temperature_WQ,
+                     y = plant_height_cm,
+                     colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+#3 leaf_weight/temperature + hovedtype
 (plot_leafweight_temp <- ggplot(data = Gradient.df3) +
     geom_point(aes(x = temperature_WQ,
                    y = leaf_weight,
@@ -438,27 +453,6 @@ higher precipitation in the west (lower longitude) plots, low in the north
 #sum(is.na(Gradient.df3$hovedtype) & is.na(Gradient.df3$leaf_weight)) # 875 overlap
 # only data either missing hovedtype and/or not yet weighed was omitted, all good
 # no need to run this part every time
-
-
-#3 plant_height/temperature + species
-(plot_height_temp2 <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = temperature_WQ,
-                   y = plant_height_cm,
-                   colour = species)) +
-    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Species") +
-    theme_classic2()
-)
-
-#3b boxplot plant_height/temperature + species
-(boxplot_height_temp <- ggplot(data = Gradient.df3) +
-    geom_boxplot(aes(x = temperature_WQ,
-                     y = plant_height_cm,
-                     colour = species)) +
-    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Species") +
-    theme_classic2()
-)
-
-
 ```
 
 Initial observations on impact of temperature on traits: increase height and leaf weight
@@ -466,6 +460,11 @@ Initial observations on impact of temperature on traits: increase height and lea
 #2 one outlier, very high leaf weight!
 
 #3 VM plants tend to be a bit taller than VV
+
+```{r plots_trait-precipitation}
+
+
+```
 
 ## PCA
 
