@@ -482,9 +482,9 @@ higher precipitation in the west (lower longitude) plots, low in the north
 
 ```
 
-Initial observations on impact of temperature on traits: increase height and leaf weight
+Initial observations on impact of temperature on traits: increase with temperature
 
-#2 and #2b VM plants tend to be a bit taller than VV
+#2 and #2b show that VM plants tend to be a bit taller than VV, possible outliers in VM
 
 #3 and #4 show some VM plants from Fastmarksskogmark have especially long branches
 
@@ -560,6 +560,26 @@ Plant size traits seem to peek around 1200 mm annual precipitation, except for t
 
 ```{r plots_trait-relationships}
 
+# is number of segments (proxy for age) related to plant height?
+(plot_height_segments <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = nr_segments_lb,
+                   y = plant_height_cm,
+                   colour = species)) +
+    labs(x = "Number of Segments", y = "Plant Height (cm)", colour = "Species") +
+    theme_classic2()
+)
+# slight trend of older plants being taller, but there are many older plants with very short segments
+# more of an upper end (plants can only get so tall with a certain number of segments), but many short segments are common
+
+# same with longest branch length instead of plant height
+(plot_length_segments <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = nr_segments_lb,
+                   y = length_lb_cm,
+                   colour = species)) +
+    labs(x = "Number of Segments", y = "Longest Branch (cm)", colour = "Species") +
+    theme_classic2()
+)
+# shows a very similar pattern
 ```
 
 ## PCA
