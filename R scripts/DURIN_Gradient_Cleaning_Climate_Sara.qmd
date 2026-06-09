@@ -663,6 +663,48 @@ trait_temperature_plotlist2
 
 ```
 
+Automatic plots for traits against precipitation, colour showing hovedtype
+
+```{r auto_plot_trait/precipitation1}
+
+# Function setup
+trait_precipitation_plots <- function(trait_value){
+  plot_trait_value_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = .data[[trait_value]],  #dynamic column selection
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", colour = "Vegetation Type") +
+    theme_classic2()
+}
+
+trait_precipitation_plotlist = list()
+
+for (i in c("plant_height_cm", "length_lb_cm", "length_mm", "nr_leaves", "nr_branch_scars", "nr_side_branches", "leaf_weight", "stem_weight", "branches_weight", "leaf_stem_ratio_main", "total_biomass" )) {trait_precipitation_plotlist[[i]] = trait_precipitation_plots(i)}
+
+trait_precipitation_plotlist
+```
+
+Automatic plots for traits against precipitation, colour showing species
+
+```{r auto_plot_trait/precipitation2}
+
+# Function setup
+trait_precipitation_plots2 <- function(trait_value){
+  plot_trait_value_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = .data[[trait_value]],  #dynamic column selection
+                   colour = species)) +
+    labs(x = "Annual Precipitation", colour = "Species") +
+    theme_classic2()
+}
+
+trait_precipitation_plotlist2 = list()
+
+for (i in c("plant_height_cm", "length_lb_cm", "length_mm", "nr_leaves", "nr_branch_scars", "nr_side_branches", "leaf_weight", "stem_weight", "branches_weight", "leaf_stem_ratio_main", "total_biomass" )) {trait_precipitation_plotlist2[[i]] = trait_precipitation_plots2(i)}
+
+trait_precipitation_plotlist2
+```
+
 #### Plots on species differences
 
 ```{r plots_species differences}
