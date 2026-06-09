@@ -705,6 +705,22 @@ for (i in c("plant_height_cm", "length_lb_cm", "length_mm", "nr_leaves", "nr_bra
 trait_precipitation_plotlist2
 ```
 
+Looking for Outliers
+
+```{r outliers}
+
+# stem_weight for 1427_46_vv_2 = 286
+# this affects stem_weight, leaf_stem_ratio_main, total_biomass
+
+# leaf weight shows one single value above 0.5, might be an outlier
+Gradient.df3[Gradient.df3$leaf_weight > 0.5, ] 
+# leaf_weight = 0.9709 for 622_35_T4-C-1_vm_1 (5 leaves)
+# is this still a realisitic value for leaf weight?
+
+# number of side branches potocol issue
+
+```
+
 #### Plots on species differences
 
 ```{r plots_species differences}
