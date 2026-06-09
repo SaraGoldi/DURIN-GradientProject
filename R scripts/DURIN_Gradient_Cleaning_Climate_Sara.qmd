@@ -540,6 +540,72 @@ Initial observations on impact of temperature on traits: size and weight tend to
 
 #5c VM plants were heavier than VV in 2022, much more noticable than any patterns in the following years -\> species differences more closely analysed in the next code block
 
+```{r plots_trait-precipitation}
+
+# same plots as above with precipation instead of temperature
+
+#1 plant_height/precipitation + hovedtype
+(plot_height_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = plant_height_cm,
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", y = "Plant Height (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+#2 plant_height/precipitation + species
+(plot_height_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = plant_height_cm,
+                   colour = species)) +
+    labs(x = "Annual Precipitation", y = "Plant Height (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+#3 length_lb/precipitation + hovedtype
+(plot_length_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = length_lb_cm,
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+#4 length_lb/precipitation + species
+(plot_length_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = length_lb_cm,
+                   colour = species)) +
+    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Species") +
+    theme_classic2()
+)
+
+# leaf_weight/precipitation + hovedtype
+(plot_leafweight_prec <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = leaf_weight,
+                   colour = hovedtype)) +
+    labs(x = "Annual Precipitation", y = "Leaf Weight (g)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+
+# leaf_weight/precipitation + species
+(plot_leafweight_prec2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = precipitation_Annual,
+                   y = leaf_weight,
+                   colour = species)) +
+    labs(x = "Annual Precipitation", y = "Leaf Weight (g)", colour = "Species") +
+    theme_classic2()
+)
+
+
+```
+
+Patterns much less clear with precipitation than with temperature
+
+Plant size traits seem to peek around 1200 mm annual precipitation, except for the especially tall VM plants from Fastmarksskogmark
+
 #### Function to automatically create multiple variations of these plots
 
 Automatic plots for traits against temperature, colour showing hovedtype
@@ -710,72 +776,6 @@ unique(Gradient.df3.2022$nr_branch_scars) # the max number of side branches shou
 #3 and previous: Weight differences between VM and VV persist for main stem and side branches, VM is consistently heavier
 
 #4 higher leaf number in VV, overall leaf weight similar on average
-
-```{r plots_trait-precipitation}
-
-# same plots as above with precipation instead of temperature
-
-#1 plant_height/precipitation + hovedtype
-(plot_height_prec <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = plant_height_cm,
-                   colour = hovedtype)) +
-    labs(x = "Annual Precipitation", y = "Plant Height (cm)", colour = "Vegetation Type") +
-    theme_classic2()
-)
-
-#2 plant_height/precipitation + species
-(plot_height_prec2 <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = plant_height_cm,
-                   colour = species)) +
-    labs(x = "Annual Precipitation", y = "Plant Height (cm)", colour = "Species") +
-    theme_classic2()
-)
-
-#3 length_lb/precipitation + hovedtype
-(plot_length_prec <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = length_lb_cm,
-                   colour = hovedtype)) +
-    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Vegetation Type") +
-    theme_classic2()
-)
-
-#4 length_lb/precipitation + species
-(plot_length_prec2 <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = length_lb_cm,
-                   colour = species)) +
-    labs(x = "Annual Precipitation", y = "Longest Branch Length (cm)", colour = "Species") +
-    theme_classic2()
-)
-
-# leaf_weight/precipitation + hovedtype
-(plot_leafweight_prec <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = leaf_weight,
-                   colour = hovedtype)) +
-    labs(x = "Annual Precipitation", y = "Leaf Weight (g)", colour = "Vegetation Type") +
-    theme_classic2()
-)
-
-
-# leaf_weight/precipitation + species
-(plot_leafweight_prec2 <- ggplot(data = Gradient.df3) +
-    geom_point(aes(x = precipitation_Annual,
-                   y = leaf_weight,
-                   colour = species)) +
-    labs(x = "Annual Precipitation", y = "Leaf Weight (g)", colour = "Species") +
-    theme_classic2()
-)
-
-
-```
-
-Patterns much less clear with precipitation than with temperature
-
-Plant size traits seem to peek around 1200 mm annual precipitation, except for the especially tall VM plants from Fastmarksskogmark
 
 #### Relationships between traits
 
