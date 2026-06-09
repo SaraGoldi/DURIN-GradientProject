@@ -403,9 +403,7 @@ higher precipitation in the west (lower longitude) plots, low in the north
 
 #### Variations of trait against a climate space plots
 
-- impact of temperature on traits
-
-- impact of precipitation on traits
+##### Impact of temperature on traits
 
 ```{r plots_trait-temperature}
 
@@ -540,6 +538,8 @@ Initial observations on impact of temperature on traits: size and weight tend to
 
 #5c VM plants were heavier than VV in 2022, much more noticable than any patterns in the following years -\> species differences more closely analysed in the next code block
 
+##### Impact of precipitation on traits
+
 ```{r plots_trait-precipitation}
 
 # same plots as above with precipation instead of temperature
@@ -635,7 +635,7 @@ trait_temperature_plots <- function(trait_value){
 
 trait_temperature_plotlist = list()
 
-for (i in c("plant_height_cm", "length_lb_cm", "total_biomass", "leaf_stem_ratio_main", "leaf_weight", "stem_weight", "branches_weight" )) {trait_temperature_plotlist[[i]] = trait_temperature_plots(i)}
+for (i in c("plant_height_cm", "length_lb_cm", "length_mm", "nr_leaves", "nr_branch_scars", "nr_side_branches", "leaf_weight", "stem_weight", "branches_weight", "leaf_stem_ratio_main", "total_biomass" )) {trait_temperature_plotlist[[i]] = trait_temperature_plots(i)}
 
 trait_temperature_plotlist
 ```
@@ -656,10 +656,14 @@ trait_temperature_plots2 <- function(trait_value){
 
 trait_temperature_plotlist2 = list()
 
-for (i in c("plant_height_cm", "length_lb_cm", "total_biomass", "leaf_stem_ratio_main", "leaf_weight", "stem_weight", "branches_weight" )) {trait_temperature_plotlist2[[i]] = trait_temperature_plots2(i)}
+for (i in c("plant_height_cm", "length_lb_cm", "length_mm", "nr_leaves", "nr_branch_scars", "nr_side_branches", "leaf_weight", "stem_weight", "branches_weight", "leaf_stem_ratio_main", "total_biomass" )) {trait_temperature_plotlist2[[i]] = trait_temperature_plots2(i)}
 
 trait_temperature_plotlist2
+
+
 ```
+
+#### Plots on species differences
 
 ```{r plots_species differences}
 
