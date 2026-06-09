@@ -316,8 +316,8 @@ Names of vegetation types
 
 ```{r cleaning_vegetation_types}
 
-unique(Gradient.df3$hovedtype)
-class(Gradient.df3$hovedtype)
+#unique(Gradient.df3$hovedtype)
+#class(Gradient.df3$hovedtype)
 Gradient.df3$hovedtype <- as.factor(Gradient.df3$hovedtype)
 levels(Gradient.df3$hovedtype)
 
@@ -539,6 +539,61 @@ Initial observations on impact of temperature on traits: size and weight tend to
 \# one outlier in weight: 1427_46_VV_2 in 2024 leaf weight (and total biomass as a consequence) -\> 286g seems unrealistic, likely a typo
 
 #5c VM plants were heavier than VV in 2022, much more noticable than any patterns in the following years -\> species differences more closely analysed in the next code block
+
+#### Function to automatically create multiple variations of these plots
+
+Automatic plots for traits against temperature, colour showing hovedtype
+
+```{r auto_plot_trait/temperature1}
+
+# Base-plot: plant_height/temperature + hovedtype
+(plot_height_temp <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = plant_height_cm,
+                   colour = hovedtype)) +
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+# Function setup
+trait_temperature_plots <- function(trait_value){
+  plot_trait_value_temp <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = .data[[trait_value]],  #dynamic column selection
+                   colour = hovedtype)) +
+    labs(x = "Temperature (Warmest Quarter)", colour = "Vegetation Type") +
+    theme_classic2()
+}
+
+(trait_temperature_plots("plant_height_cm")) #Test: now it works!
+
+trait_temperature_plotlist = list()
+
+for (i in c("plant_height_cm", "length_lb_cm", "total_biomass", "leaf_stem_ratio_main", "leaf_weight", "stem_weight", "branches_weight" )) {trait_temperature_plotlist[[i]] = trait_temperature_plots(i)}
+
+trait_temperature_plotlist
+```
+
+Automatic plots for traits against temperature, colour showing species
+
+```{r auto_plot_trait/temperature2}
+
+# Function setup
+trait_temperature_plots2 <- function(trait_value){
+  plot_trait_value_temp2 <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = .data[[trait_value]],  #dynamic column selection
+                   colour = species)) +
+    labs(x = "Temperature (Warmest Quarter)", colour = "Species") +
+    theme_classic2()
+}
+
+trait_temperature_plotlist2 = list()
+
+for (i in c("plant_height_cm", "length_lb_cm", "total_biomass", "leaf_stem_ratio_main", "leaf_weight", "stem_weight", "branches_weight" )) {trait_temperature_plotlist2[[i]] = trait_temperature_plots2(i)}
+
+trait_temperature_plotlist2
+```
 
 ```{r plots_species differences}
 
