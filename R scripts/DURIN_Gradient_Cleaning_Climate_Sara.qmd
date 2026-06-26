@@ -920,6 +920,50 @@ unique(Gradient.df3.2022$nr_branch_scars) # the max number of side branches shou
 # shows a very similar pattern
 ```
 
+## Regression Analysis
+
+Testing initial observation: Many trait values (size and weight) increase with temperature.
+
+Attempt to use a linear model (ran out of time to work out all the issues/try more variations, maybe a glm would be better)
+
+```{r regression}
+
+# temperature as a predictor of plant height
+model_temp_height <- lm(plant_height_cm ~ temperature_WQ, data = Gradient.df3)
+summary(model_temp_height)
+# significant, explains about 25% of the variation in plant height
+
+#visualisation
+(plot_model_temp_height <- ggplot(data = Gradient.df3) +
+    geom_point(aes(x = temperature_WQ,
+                   y = plant_height_cm,
+                   colour = hovedtype)) +
+    stat_smooth(method = "lm", aes(temperature_WQ, plant_height_cm)) + 
+    labs(x = "Temperature (Warmest Quarter)", y = "Plant Height (cm)", colour = "Vegetation Type") +
+    theme_classic2()
+)
+
+plot(model_temp_height) 
+
+model1_resids <- resid(model_temp_height)
+shapiro.test(model1_resids)  # significant, non-normal distribution of residuals, likely due to some outliers
+
+library(car)
+model1_bptest <- ncvTest(model_temp_height)
+print(model1_bptest)  # significant, have to assume heteroscedacity!
+
+
+
+# lets add segment count as a proxy for age into this  model
+Gradient.df3$nr_segments_lb <- as.numeric(Gradient.df3$nr_segments_lb)
+model_temp_height2 <- lm(plant_height_cm ~ temperature_WQ + nr_segments_lb, data = Gradient.df3)
+summary(model_temp_height2)
+
+# better, both of these variables explain almost 30% of variation in plant height
+```
+
+Are there any such patterns for traits and precipitation?
+
 ## PCA
 
 Are plants from the same hovedtype or the same location more similar to each other?
