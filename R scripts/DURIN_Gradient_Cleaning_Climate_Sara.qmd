@@ -703,6 +703,33 @@ for (i in c("plant_height_cm", "length_lb_cm", "length_mm", "nr_leaves", "nr_bra
 trait_precipitation_plotlist2
 ```
 
+For any traits that don't apply to the whole plant it would make sense to look at each year individually
+
+```{r by_segment}
+
+(plot_leafweight2024 <- Gradient.df3 %>% 
+    filter(Segment == "S24", 
+          leaf_weight <0.5) %>%  #removes outlier
+    ggplot(data = .) +
+    geom_point(aes(x = temperature_WQ,
+                   y = leaf_weight,
+                   colour = species)) +
+    theme_classic2()
+)
+
+
+#comparing between years
+(boxplot_stemweight <- Gradient.df3 %>% group_by(Segment) %>% 
+    filter(!is.na(Segment), stem_weight <10) %>% 
+    ggplot(data = .) +
+    geom_boxplot(aes(x = Segment,
+                     y = stem_weight,
+                     fill = Segment)) +
+    theme_classic2()
+)
+# not the most helpful looking boxplots
+```
+
 Looking for Outliers and Issues in the data
 
 ```{r outliers}
